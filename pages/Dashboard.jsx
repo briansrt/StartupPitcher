@@ -8,7 +8,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/estadisticas/${user.id}`);
+        const res = await fetch(`https://startup-pitcher-back.vercel.app/api/estadisticas/${user.id}`);
         const data = await res.json();
         setStats(data);
       } catch (err) {

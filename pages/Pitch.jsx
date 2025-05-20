@@ -17,7 +17,7 @@ export default function PitchIA() {
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/misIdeas/${user.id}`);
+        const res = await fetch(`https://startup-pitcher-back.vercel.app/api/misIdeas/${user.id}`);
         const data = await res.json();
         setIdeas(data);
       } catch (error) {
@@ -44,7 +44,7 @@ export default function PitchIA() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/chatbot/mejorarPitch', {
+      const res = await fetch('https://startup-pitcher-back.vercel.app/chatbot/mejorarPitch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pitch: pitchOriginal }),
@@ -69,7 +69,7 @@ export default function PitchIA() {
 
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:4000/chatbot/guardarPitch`, {
+      const res = await fetch(`https://startup-pitcher-back.vercel.app/chatbot/guardarPitch`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

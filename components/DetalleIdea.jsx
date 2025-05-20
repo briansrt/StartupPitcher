@@ -18,7 +18,7 @@ export default function DetalleIdea() {
   useEffect(() => {
     const fetchIdea = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/getIdeaId/${id}`);
+        const res = await fetch(`https://startup-pitcher-back.vercel.app/api/getIdeaId/${id}`);
         const data = await res.json();
         setIdea(data);
         setForm({
@@ -41,7 +41,7 @@ export default function DetalleIdea() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/api/editarIdea/${id}`, {
+      const res = await fetch(`https://startup-pitcher-back.vercel.app/api/editarIdea/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

@@ -14,7 +14,7 @@ export default function SubirIdea() {
   const handleNewIdeaSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/api/crearIdeas', {
+      const response = await fetch('https://startup-pitcher-back.vercel.app/api/crearIdeas', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

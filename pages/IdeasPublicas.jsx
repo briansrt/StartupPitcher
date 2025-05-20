@@ -7,7 +7,7 @@ export default function IdeasPublicas() {
   useEffect(() => {
     const fetchPublicIdeas = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/ideasPublicas');
+        const res = await fetch('https://startup-pitcher-back.vercel.app/api/ideasPublicas');
         const data = await res.json();
         setIdeas(data);
       } catch (err) {

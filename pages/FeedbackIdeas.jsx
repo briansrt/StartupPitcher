@@ -13,7 +13,7 @@ export default function FeedbackIdeas() {
     const solicitarFeedbackIA = async (ideaId) => {
         setIsLoadingFeedback(true);
         try {
-            const response = await fetch(`http://localhost:4000/chatbot/FeedbackIdeas`, {
+            const response = await fetch(`https://startup-pitcher-back.vercel.app/chatbot/FeedbackIdeas`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -45,7 +45,7 @@ export default function FeedbackIdeas() {
     useEffect(() => {
         const fetchIdeas = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/api/misIdeas/${user.id}`, {
+                const response = await fetch(`https://startup-pitcher-back.vercel.app/api/misIdeas/${user.id}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

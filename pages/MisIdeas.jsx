@@ -16,7 +16,7 @@ export default function MisIdeas() {
   const publicarIdea = async (ideaId, estadoActual) => {
     const nuevoEstado = estadoActual === "publico" ? "privado" : "publico";
     try {
-      const response = await fetch(`http://localhost:4000/api/publicarIdea`, {
+      const response = await fetch(`https://startup-pitcher-back.vercel.app/api/publicarIdea`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ideaId, nuevoEstado }),
@@ -40,7 +40,7 @@ export default function MisIdeas() {
 
   const handleDelete = async (ideaId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/eliminarIdea/${ideaId}`, {
+      const response = await fetch(`https://startup-pitcher-back.vercel.app/api/eliminarIdea/${ideaId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
@@ -60,7 +60,7 @@ export default function MisIdeas() {
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/misIdeas/${user.id}`);
+        const response = await fetch(`https://startup-pitcher-back.vercel.app/api/misIdeas/${user.id}`);
         if (response.ok) {
           const data = await response.json();
           setIdeas(data);
