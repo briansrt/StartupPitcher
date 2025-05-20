@@ -20,9 +20,20 @@ StartupPitcher es una plataforma diseñada para ayudar a emprendedores, estudian
 
 <!-- Agrega aquí imágenes o GIFs -->
 - Pantalla principal sin login
+
+![Login](https://github.com/user-attachments/assets/e0d919dc-3ae2-4c08-bbb9-55a3565807cb)
+
 - Panel de ideas del usuario
+
+![Panel de Ideas](https://github.com/user-attachments/assets/627f37d8-2218-4f22-b4ec-540df9ba6a37)
+
 - Formulario de pitch
+
+![Panel de Pitch](https://github.com/user-attachments/assets/a7869770-8599-47c4-9512-e07250c7357e)
+
 - Feedback generado por IA
+
+![Feedback](https://github.com/user-attachments/assets/492e7cbf-d3a5-4474-8860-927fdf11c46d)
 
 ---
 
