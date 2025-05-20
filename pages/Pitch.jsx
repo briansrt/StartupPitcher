@@ -34,7 +34,7 @@ export default function PitchIA() {
     setSelectedIdea(idea || null);
     setPitchOriginal('');
     setPitchMejorado('');
-  }, [selectedIdeaId]);
+  }, [selectedIdeaId, ideas]);
 
   const handleMejorarPitch = async () => {
     if (!pitchOriginal.trim()) {

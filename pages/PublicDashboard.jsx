@@ -1,11 +1,13 @@
-import {React, useState} from 'react';
+import {React, useState, useRef} from 'react';
 import { SignIn, SignInButton } from '@clerk/clerk-react';
-import { ArrowRight, Lightbulb, ThumbsUp, Rocket, MessageSquareMore, Lock } from 'lucide-react';
+import { ArrowRight, Lightbulb, Rocket, MessageSquareMore, Lock } from 'lucide-react';
+import Markdown from 'react-markdown';
 
 export default function PublicDashboard() {
     const [chatInput, setChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const [chatAttempts, setChatAttempts] = useState(0);
+    const chatbotRef = useRef(null);
 
     const mockIdeas = [
         { id: 1, title: "App para encontrar cuidadores de mascotas", description: "Conecta dueños de mascotas con cuidadores confiables.", valorated: 182 },
@@ -13,31 +15,43 @@ export default function PublicDashboard() {
         { id: 3, title: "Servicio de mentoría para estudiantes remotos", description: "Mentores verificados para estudiantes online.", valorated: 120 },
     ];
 
-    const handleChatSubmit = (e) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
+    const handleChatSubmit = async (e) => {
+  e.preventDefault();
+  if (!chatInput.trim()) return;
 
-    // Add user message
-    const newMessages = [...chatMessages, { sender: 'user', text: chatInput }];
-    setChatMessages(newMessages);
-    setChatInput('');
-    setChatAttempts(chatAttempts + 1);
+  const userMessage = chatInput;
 
-    // Simulate bot response
-    setTimeout(() => {
-      let botResponse = '';
-      
-      if (chatAttempts >= 2) {
-        botResponse = 'Parece que tienes una idea interesante. Regístrate gratis para continuar el análisis y recibir feedback completo.';
-      } else if (chatAttempts === 1) {
-        botResponse = '¿Cuál es el problema principal que tu idea resuelve? ¿Has identificado a tu público objetivo?';
-      } else {
-        botResponse = 'Interesante. ¿Has investigado si existen competidores similares en el mercado? ¿Cuál sería tu ventaja competitiva?';
-      }
-      
-      setChatMessages(prev => [...prev, { sender: 'bot', text: botResponse }]);
-    }, 1000);
-  };
+  // Añadir mensaje del usuario
+  const newMessages = [...chatMessages, { sender: 'user', text: userMessage }];
+  setChatMessages(newMessages);
+  setChatInput('');
+  setChatAttempts(prev => prev + 1);
+
+  try {
+    const response = await fetch('https://startup-pitcher-back.vercel.app/chatbot/demoChatbot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: userMessage
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data && data.reply) {
+      setChatMessages(prev => [...prev, { sender: 'bot', text: data.reply }]);
+    } else {
+      setChatMessages(prev => [...prev, { sender: 'bot', text: 'Lo siento, hubo un problema al procesar tu mensaje.' }]);
+    }
+
+  } catch (error) {
+    console.error('Error al comunicarse con el chatbot:', error);
+    setChatMessages(prev => [...prev, { sender: 'bot', text: 'Error al conectarse con el servidor.' }]);
+  }
+};
+
 
     return (
         <main>
@@ -48,7 +62,7 @@ export default function PublicDashboard() {
                         <h1 className='text-blue-400 text-5xl font-extrabold'>Valida tu idea de negocio</h1>
                         <p className='text-3xl font-extrabold'>y mejora tu pitch con IA.</p>
                         <p className='text-lg mb-8 text-indigo-100'>Transforma tus conceptos en propuestas convincentes. Obten feedback instantáneo y pule tu presentacion hasta la perfección</p>
-                        <button type="button"  className="flex justify-center items-center gap-1 cursor-pointer text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Probar demo sin cuenta <ArrowRight/></button>
+                        <button type="button" onClick={() => chatbotRef.current?.scrollIntoView({ behavior: 'smooth' })} className="flex justify-center items-center gap-1 cursor-pointer text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Probar demo sin cuenta <ArrowRight/></button>
                     </div>
                     <div className='hidden md:block'>
                         <SignIn fallbackRedirectUrl={"/Dashboard"}/>
@@ -81,7 +95,7 @@ export default function PublicDashboard() {
                         ))}
                     </div>
                     <div className="text-center mt-8">
-                        <SignInButton mode="modal" fallbackRedirectUrl="/Dashboard" asChild>
+                        <SignInButton mode="modal" fallbackRedirectUrl="/Dashboard">
                           <button className='px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer'>
                             Ver más ideas
                           </button>
@@ -90,7 +104,7 @@ export default function PublicDashboard() {
                 </div>
             </section>
 
-            <section className="py-16 bg-gray-50" id="chatbot">
+            <section className="py-16 bg-gray-50" id="chatbot" ref={chatbotRef}>
                 <div className="container mx-auto px-4">
                 <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Prueba nuestro asistente de IA</h2>
                 
@@ -108,7 +122,11 @@ export default function PublicDashboard() {
                         chatMessages.map((msg, index) => (
                         <div key={index} className={`mb-4 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                             <div className={`inline-block p-3 rounded-lg ${msg.sender === 'user' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800'}`}>
-                            {msg.text}
+                            {msg.sender === 'bot' ? (
+                              <Markdown>{msg.text}</Markdown>
+                            ) : (
+                              msg.text
+                            )}
                             </div>
                         </div>
                         ))
@@ -170,8 +188,8 @@ export default function PublicDashboard() {
               <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageSquareMore className="text-indigo-600 text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-black">Comunidad activa</h3>
-              <p className="text-gray-600">Participa en discusiones y recibe feedback de otros emprendedores.</p>
+              <h3 className="text-xl font-semibold mb-2 text-black">Explora ideas públicas</h3>
+              <p className="text-gray-600">Descubre cómo otros emprendedores presentan sus ideas y encuentra inspiración para mejorar la tuya.</p>
             </div>
             
             <div className="text-center p-6">
@@ -184,7 +202,7 @@ export default function PublicDashboard() {
           </div>
           
           <div className="text-center mt-12">
-            <SignInButton mode="modal" fallbackRedirectUrl={"/Dashboard"} asChild >
+            <SignInButton mode="modal" fallbackRedirectUrl={"/Dashboard"}  >
               <span className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer">
                 Crear Cuenta Gratuita
               </span>
